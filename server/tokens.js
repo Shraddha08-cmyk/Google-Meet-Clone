@@ -18,7 +18,7 @@ const videoToken = (identity, room, config) => {
         videoGrant = new VideoGrant({room})
     }
     else {
-        videoGrant = new VideoGrant;
+        videoGrant = new VideoGrant();
     }
     const token = generateToken(config)
     token.addGrant(videoGrant)

@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 app.use(pino);
 
 const sendTokenResponse = (token, res) => {
-    res.set("Content-Type", "application.json");
+    res.set("Content-type", "application/json");
     res.send(
         JSON.stringify({
             token:token.toJwt()
@@ -20,7 +20,7 @@ const sendTokenResponse = (token, res) => {
 
 app.get("/api/greeting",(req,res)=>{
     const name = req.query.name || "World"
-    res.setHeader("Content-type", "application/json");
+    res.setHeader("Content-Type", "application/json");
     res.send(JSON.stringify({greeting : `Hello $ {name}!`}))
 });
 
