@@ -1,11 +1,13 @@
+import { Badge } from '@material-ui/core';
+import { ChatOutlined, PeopleAltOutlined } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react'
+import './TopHeader.css'
 
-const Participant = ({participant}) => {
-    const [videoTracks, setVideoTracks] = useState([])
-    const [audioTracks, setAudioTracks] = useState([])
+const TopHeader = ({participant}) => {
+
+    const [videoTracks, setVideoTracks] = useState([]);
 
     const videoRef = useRef()
-    const audioRef = useRef()
 
     const trackPubsToTracks = (trackMap) =>
     Array.from(trackMap.values())
@@ -14,29 +16,23 @@ const Participant = ({participant}) => {
 
     useEffect(()=> {
         setVideoTracks(trackPubsToTracks(participant.videoTracks));
-        setAudioTracks(trackPubsToTracks(participant.audioTracks));
 
         const trackSubscribed = (track) => {
             if(track.kind === "video") {
                 setVideoTracks((videoTracks) => [...videoTracks, track]);
-            }else if(track.kind === "audio") {
-                setAudioTracks((audioTracks) => [...audioTracks, track]);
             }
         };
 
         const trackUnsubscribed = (track) => {
             if(track.kind === "video") {
                 setVideoTracks((videoTracks) => videoTracks.filter((v) => v !== track))
-            }else if(track.kind === "audio") {
-                setAudioTracks((audioTracks) => audioTracks.filter((a) => a !== track))
             }
-        }
+        };
         participant.on("trackSubscribed", trackSubscribed);
         participant.on("trackUnsubscribed", trackUnsubscribed);
 
         return () => {
             setVideoTracks([]);
-            setAudioTracks([]);
             participant.removeAllListeners()
         };
     },[participant]);
@@ -52,24 +48,24 @@ const Participant = ({participant}) => {
         }
     },[videoTracks]);
 
-    useEffect (() => {
-        const audioTrack = audioTracks[0];
-
-        if(audioTrack) {
-            audioTrack.attach(audioRef.current)
-            return () => {
-                audioTrack.detach();
-            };
-        }
-    },[audioTracks]);
-
   return (
-    <div className='participant'>
-        <h3>{participant.identity}</h3>
-        <video ref={videoRef} autoPlay />
-        <audio ref={audioRef} autoPlay muted />
+    <div className='top_header'>
+        <div className="top-header-item">
+            <Badge badgeContent={4} >
+                <PeopleAltOutlined />
+            </Badge>
+        </div>
+
+        <div className="top-header-item second-item">
+            <ChatOutlined />
+        </div>
+
+        <div className="top-header-item video-item">
+            <video className='top_header_video' ref={videoRef} autoPlay={true} />
+        </div>
+
     </div>
   )
 }
 
-export default Participant
+export default TopHeader
